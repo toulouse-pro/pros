@@ -60,7 +60,7 @@ function updateStatus() {
     statusText.textContent = "Modifications non enregistrées (Brouillon)";
   } else {
     statusDot.style.backgroundColor = "#28a745";
-    statusText.textContent = "Synchronisé avec GitHub";
+    statusText.textContent = "Synchronisé";
   }
 }
 
