@@ -4,60 +4,39 @@
   <meta charset="utf-8">
   <title>Site Editor</title>
   <style>
-    body { font-family: sans-serif; max-width: 700px; margin: 40px auto; }
-    label { display: block; margin-top: 16px; font-weight: bold; }
-    input, textarea { width: 100%; padding: 8px; margin-top: 4px; }
-    button { margin-top: 24px; padding: 10px 16px; }
+    body { font-family: sans-serif; max-width: 700px; margin: 40px auto; background: #f4f4f9; }
+    h1 { text-align: center; color: #333; }
+    select { padding: 8px; margin-bottom: 20px; width: 100%; font-size: 16px; }
+    
+    /* Form Styling */
+    .field-wrapper { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    label { display: block; margin-bottom: 8px; font-weight: bold; color: #555; }
+    input, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-family: inherit; }
+    input:focus, textarea:focus { border-color: #007bff; outline: none; }
+    
+    /* Button Styling */
+    button { 
+      background-color: #28a745; color: white; border: none; 
+      padding: 12px 24px; font-size: 16px; border-radius: 4px; 
+      cursor: pointer; width: 100%; margin-top: 10px;
+    }
+    button:hover { background-color: #218838; }
   </style>
 </head>
 <body>
 
-<h1>Accueil – Editor</h1>
+<h1>Site Editor</h1>
 
 <select id="section">
   <option value="accueil">Accueil</option>
-  <option value="avis">Avis</option>
-  <option value="horaires">Horaires</option>
-  <option value="photos">Photos</option>
-  <option value="menu">Spécialités</option>
-  <option value="carte">Carte</option>
   <option value="contact">Contact</option>
-</select>
+  </select>
   
 <div id="form"></div>
-<button id="save">Save</button>
+<button id="save">Sauvegarder sur GitHub</button>
 
 <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
-<script src="schema.js"></script>
 <script src="editor.js"></script>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    // 1. Select all textareas and text inputs
-    const inputs = document.querySelectorAll("textarea, input[type='text']");
-
-    inputs.forEach(input => {
-        // 2. Create a unique key for each field (using its name or ID)
-        // We add a prefix 'draft_' to avoid conflicts with other sites
-        const key = "draft_" + (input.name || input.id);
-
-        // 3. RESTORE: On load, check if we have a saved value
-        const savedValue = localStorage.getItem(key);
-        if (savedValue) {
-            input.value = savedValue;
-        }
-
-        // 4. SAVE: Listen for typing
-        input.addEventListener("input", function() {
-            // ONLY save if the field is NOT empty.
-            // This prevents deleting the saved "last sentence" if you 
-            // temporarily blank out the field.
-            if (this.value.trim() !== "") {
-                localStorage.setItem(key, this.value);
-            }
-        });
-    });
-});
-</script>  
 </body>
 </html>
