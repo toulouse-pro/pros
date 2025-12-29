@@ -1,3 +1,10 @@
+let GITHUB_TOKEN = localStorage.getItem("gh_token");
+
+if (!GITHUB_TOKEN) {
+  GITHUB_TOKEN = prompt("GitHub token (une seule fois) :");
+  localStorage.setItem("gh_token", GITHUB_TOKEN);
+}
+
 const sectionSelect = document.getElementById("section");
 const form = document.getElementById("form");
 const saveBtn = document.getElementById("save");
