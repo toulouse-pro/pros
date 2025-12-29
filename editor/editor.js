@@ -1,7 +1,7 @@
 const OWNER = "toulouse-pro";
 const REPO = "pros";
 const BRANCH = "main";
-const FILE_PATH = "_data/accueil.yml";
+const FILE_PATH = `_data/${currentSection}.yml`;
 
 let token = localStorage.getItem("gh_token");
 
