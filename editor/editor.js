@@ -68,20 +68,14 @@ async function loadSection(section) {
 saveBtn.onclick = async () => {
   const schema = SCHEMA[currentSection];
   const inputs = form.querySelectorAll("[data-field]");
-  const obj = {};
-
-  inputs.forEach(i => {
-    obj[i.dataset.field] = i.value;
-  });
-
-  const yaml = jsyaml.dump(obj, { lineWidth: 1000 });
-  const content = btoa(unescape(encodeURIComponent(yaml)));
-
+  
+  // 1. Fetch current file content from GitHub first to merge data
   const path = schema.file;
   const api = `https://api.github.com/repos/toulouse-pro/pros/contents/${path}`;
-
-  // get SHA if file exists
+  
+  let existingData = {};
   let sha = null;
+
   const res = await fetch(api, {
     headers: { Authorization: `Bearer ${GITHUB_TOKEN}` }
   });
@@ -89,8 +83,25 @@ saveBtn.onclick = async () => {
   if (res.ok) {
     const json = await res.json();
     sha = json.sha;
+    // Decode and parse the existing YAML
+    const existingYaml = decodeURIComponent(escape(atob(json.content)));
+    existingData = jsyaml.load(existingYaml) || {};
   }
 
+  // 2. Merge logic: Only update existingData if the input is NOT empty
+  inputs.forEach(i => {
+    const newVal = i.value.trim();
+    if (newVal !== "") {
+      existingData[i.dataset.field] = i.value;
+    }
+    // If newVal is "", we do nothing, so existingData keeps its old value
+  });
+
+  // 3. Convert merged data back to YAML
+  const yaml = jsyaml.dump(existingData, { lineWidth: 1000 });
+  const content = btoa(unescape(encodeURIComponent(yaml)));
+
+  // 4. Send the updated (merged) file to GitHub
   const commit = await fetch(api, {
     method: "PUT",
     headers: {
@@ -98,19 +109,20 @@ saveBtn.onclick = async () => {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      message: `Update ${currentSection}`,
+      message: `Update ${currentSection} (Smart Merge)`,
       content,
       sha
     })
   });
 
   if (commit.ok) {
-    alert("✅ Sauvegardé et publié !");
+    alert("✅ Sauvegardé ! Les champs vides ont conservé leurs anciennes valeurs.");
+    // Optional: reload the section to show the current state
+    loadSection(currentSection);
   } else {
     alert("❌ Erreur lors de la sauvegarde");
   }
 };
-
 // ---------- events ----------
 sectionSelect.onchange = () => {
   currentSection = sectionSelect.value;
