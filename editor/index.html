@@ -31,5 +31,33 @@
 <script src="schema.js"></script>
 <script src="editor.js"></script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Select all textareas and text inputs
+    const inputs = document.querySelectorAll("textarea, input[type='text']");
+
+    inputs.forEach(input => {
+        // 2. Create a unique key for each field (using its name or ID)
+        // We add a prefix 'draft_' to avoid conflicts with other sites
+        const key = "draft_" + (input.name || input.id);
+
+        // 3. RESTORE: On load, check if we have a saved value
+        const savedValue = localStorage.getItem(key);
+        if (savedValue) {
+            input.value = savedValue;
+        }
+
+        // 4. SAVE: Listen for typing
+        input.addEventListener("input", function() {
+            // ONLY save if the field is NOT empty.
+            // This prevents deleting the saved "last sentence" if you 
+            // temporarily blank out the field.
+            if (this.value.trim() !== "") {
+                localStorage.setItem(key, this.value);
+            }
+        });
+    });
+});
+</script>  
 </body>
 </html>
