@@ -634,8 +634,12 @@
           <p class="lead" data-key="accueil.lead"></p>
         </div>
         <div class="cta-row">
-          <a href="#" class="btn secondary" id="openMenu">Menu</a>
-          <a href="#" class="btn secondary" id="openReserver">Réserver</a>
+          <a href="#" class="btn secondary" id="openMenu">
+             <span data-key="accueil.cta_menu">Menu</span>
+          </a>
+          <a href="#" class="btn secondary" id="openReserver">Réserver
+          <span data-key="accueil.cta_reserver">Menu</span>
+          </a>
         </div>
       </div>
     </header>
@@ -1099,6 +1103,36 @@
     }
   });
 });
+  </script>
+  <script>
+    async function loadLiveData() {
+  const sections = ['accueil', 'avis', 'horaires', 'photos', 'specialites', 'carte', 'contact'];
+  
+  for (const section of sections) {
+    try {
+      const response = await fetch(`https://raw.githubusercontent.com/toulouse-pro/pros/main/_data/${section}.yml?t=${Date.now()}`);
+      if (!response.ok) continue;
+      
+      const yamlText = await response.text();
+      const data = jsyaml.load(yamlText);
+
+      // Update all elements with data-key="section.field"
+      document.querySelectorAll(`[data-key^="${section}."]`).forEach(el => {
+        const fieldName = el.dataset.key.split('.')[1];
+        if (data[fieldName]) {
+           // Handle email links specifically
+           if (fieldName === 'email' && el.tagName === 'A') {
+             el.href = `mailto:${data[fieldName]}`;
+           }
+           el.textContent = data[fieldName];
+        }
+      });
+    } catch (e) {
+      console.error(`Failed to load ${section}`, e);
+    }
+  }
+}
+loadLiveData();
   </script>
   <script src="/pros/js/content-loader.js"></script>
 </body>
