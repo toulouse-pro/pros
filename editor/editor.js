@@ -52,18 +52,23 @@ async function loadSection(section) {
 
   let data = {};
   try {
-    const res = await fetch(`/${schema.file}`);
-    const text = await res.text();
-    data = jsyaml.load(text) || {};
+    // We fetch from the main branch to see the most recent data
+    const res = await fetch(`https://raw.githubusercontent.com/toulouse-pro/pros/main/${schema.file}`);
+    
+    if (res.ok) {
+      const text = await res.text();
+      data = jsyaml.load(text) || {};
+    }
   } catch (e) {
-    console.warn("No existing YAML, starting fresh");
+    console.warn("Could not load existing YAML, showing empty fields:", e);
   }
 
+  // This part puts the data INTO the input boxes
   schema.fields.forEach(f => {
+    // If data[f.name] exists, it uses it. Otherwise, it stays empty.
     createField(f, data[f.name] || "");
   });
 }
-
 // ---------- save ----------
 saveBtn.onclick = async () => {
   const schema = SCHEMA[currentSection];
