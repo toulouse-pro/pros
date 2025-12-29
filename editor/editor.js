@@ -1,3 +1,28 @@
+// 1. DATA SCHEMA (Used to be schema.js)
+window.SCHEMA = {
+  accueil: {
+    label: "Accueil",
+    file: "_data/accueil.yml",
+    fields: [
+      { name: "title", label: "Nom du restaurant", type: "text" },
+      { name: "tagline", label: "Sous-titre", type: "text" },
+      { name: "lead", label: "Texte principal", type: "textarea" },
+      { name: "cta_menu", label: "Bouton Menu", type: "text" },
+      { name: "cta_reserver", label: "Bouton Réserver", type: "text" }
+    ]
+  },
+  contact: {
+    label: "Contact",
+    file: "_data/contact.yml",
+    fields: [
+      { name: "address", label: "Adresse", type: "textarea" },
+      { name: "phone", label: "Téléphone", type: "text" },
+      { name: "email", label: "Email", type: "text" }
+    ]
+  }
+};
+
+// 2. LOGIC (The editor engine)
 let GITHUB_TOKEN = localStorage.getItem("gh_token");
 
 if (!GITHUB_TOKEN) {
@@ -43,7 +68,7 @@ function createField(field, value = "") {
   form.appendChild(wrapper);
 }
 
-// ---------- load YAML (Directly from GitHub) ----------
+// ---------- load YAML ----------
 async function loadSection(section) {
   clearForm();
   const schema = SCHEMA[section];
@@ -51,7 +76,7 @@ async function loadSection(section) {
 
   let data = {};
   try {
-    // We fetch from the 'main' branch to see what's currently live
+    // Fetch from live site to pre-fill the boxes
     const res = await fetch(`https://raw.githubusercontent.com/toulouse-pro/pros/main/${schema.file}`);
     if (res.ok) {
       const text = await res.text();
@@ -66,7 +91,7 @@ async function loadSection(section) {
   });
 }
 
-// ---------- save (Smart Merge Logic) ----------
+// ---------- save (Smart Merge) ----------
 saveBtn.onclick = async () => {
   const schema = SCHEMA[currentSection];
   const inputs = form.querySelectorAll("[data-field]");
@@ -74,10 +99,10 @@ saveBtn.onclick = async () => {
   const path = schema.file;
   const api = `https://api.github.com/repos/toulouse-pro/pros/contents/${path}`;
 
-  // 1. Get existing file content & SHA
   let existingData = {};
   let sha = null;
 
+  // 1. Get current data from GitHub
   const res = await fetch(api, {
     headers: { Authorization: `Bearer ${GITHUB_TOKEN}` }
   });
@@ -89,20 +114,18 @@ saveBtn.onclick = async () => {
     existingData = jsyaml.load(existingYaml) || {};
   }
 
-  // 2. SMART MERGE: Only update if the field isn't empty
+  // 2. Merge: Only overwrite if user typed something
   inputs.forEach(i => {
     const newVal = i.value.trim();
     if (newVal !== "") {
       existingData[i.dataset.field] = i.value;
     }
-    // If it's empty, we keep existingData[i.dataset.field] as it was
   });
 
-  // 3. Convert back to YAML
+  // 3. Convert and Upload
   const yaml = jsyaml.dump(existingData, { lineWidth: 1000 });
   const content = btoa(unescape(encodeURIComponent(yaml)));
 
-  // 4. Push to GitHub
   const commit = await fetch(api, {
     method: "PUT",
     headers: {
@@ -110,17 +133,17 @@ saveBtn.onclick = async () => {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      message: `Update ${currentSection} (Smart Merge)`,
+      message: `Update ${currentSection}`,
       content,
       sha
     })
   });
 
   if (commit.ok) {
-    alert("✅ Sauvegardé ! Les champs vides ont été ignorés pour préserver vos données.");
-    loadSection(currentSection); // Refresh UI
+    alert("✅ Sauvegardé !");
+    loadSection(currentSection); 
   } else {
-    alert("❌ Erreur lors de la sauvegarde. Vérifiez votre Token.");
+    alert("❌ Erreur");
   }
 };
 
