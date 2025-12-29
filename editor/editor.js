@@ -75,12 +75,40 @@ saveBtn.onclick = async () => {
   });
 
   const yaml = jsyaml.dump(obj, { lineWidth: 1000 });
+  const content = btoa(unescape(encodeURIComponent(yaml)));
 
-  alert(
-    "YAML prêt à être envoyé à GitHub:\n\n" +
-    yaml +
-    "\n\n(Prochaine étape: commit GitHub)"
-  );
+  const path = schema.file;
+  const api = `https://api.github.com/repos/toulouse-pro/pros/contents/${path}`;
+
+  // get SHA if file exists
+  let sha = null;
+  const res = await fetch(api, {
+    headers: { Authorization: `Bearer ${GITHUB_TOKEN}` }
+  });
+
+  if (res.ok) {
+    const json = await res.json();
+    sha = json.sha;
+  }
+
+  const commit = await fetch(api, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${GITHUB_TOKEN}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      message: `Update ${currentSection}`,
+      content,
+      sha
+    })
+  });
+
+  if (commit.ok) {
+    alert("✅ Sauvegardé et publié !");
+  } else {
+    alert("❌ Erreur lors de la sauvegarde");
+  }
 };
 
 // ---------- events ----------
