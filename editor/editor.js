@@ -22,9 +22,7 @@ window.SCHEMA = {
   }
 };
 
-// 2. LOGIC
 let GITHUB_TOKEN = localStorage.getItem("gh_token");
-
 if (!GITHUB_TOKEN) {
   GITHUB_TOKEN = prompt("GitHub token (une seule fois) :");
   if(GITHUB_TOKEN) localStorage.setItem("gh_token", GITHUB_TOKEN);
@@ -33,50 +31,66 @@ if (!GITHUB_TOKEN) {
 const sectionSelect = document.getElementById("section");
 const form = document.getElementById("form");
 const saveBtn = document.getElementById("save");
-const resetBtn = document.getElementById("reset"); // NEW
+const statusDot = document.getElementById("status-dot");
+const statusText = document.getElementById("status-text");
 
 let currentSection = sectionSelect.value;
+let serverData = {}; // Stores the "clean" data from GitHub
 
-// ---------- helpers ----------
-function clearForm() {
-  form.innerHTML = "";
+// ---------- UI Helpers ----------
+function updateStatus() {
+  const inputs = form.querySelectorAll("[data-field]");
+  let hasDraft = false;
+
+  inputs.forEach(i => {
+    const fieldName = i.dataset.field;
+    // Check if current value differs from what we fetched from GitHub
+    if (i.value !== (serverData[fieldName] || "")) {
+      hasDraft = true;
+      i.style.borderColor = "#e67e22"; // Orange for modified
+      i.style.backgroundColor = "#fffaf5";
+    } else {
+      i.style.borderColor = "#ddd";
+      i.style.backgroundColor = "#fff";
+    }
+  });
+
+  if (hasDraft) {
+    statusDot.style.backgroundColor = "#e67e22";
+    statusText.textContent = "Modifications non enregistrées (Brouillon)";
+  } else {
+    statusDot.style.backgroundColor = "#28a745";
+    statusText.textContent = "Synchronisé avec GitHub";
+  }
 }
+
+function clearForm() { form.innerHTML = ""; }
 
 function createField(field, githubValue = "") {
   const wrapper = document.createElement("div");
   wrapper.className = "field-wrapper";
+  wrapper.style.marginBottom = "15px";
 
   const label = document.createElement("label");
   label.textContent = field.label;
+  label.style.display = "block";
+  label.style.fontWeight = "bold";
 
-  let input;
-  if (field.type === "textarea") {
-    input = document.createElement("textarea");
-    input.rows = 4;
-  } else {
-    input = document.createElement("input");
-    input.type = "text";
-  }
-
-  // KEY FIX: Determine value (Draft vs Live)
-  const draftKey = `draft_${currentSection}_${field.name}`;
-  const localDraft = localStorage.getItem(draftKey);
-
-  // If draft exists and is different from GitHub, use draft
-  if (localDraft !== null && localDraft !== githubValue) {
-    input.value = localDraft;
-    input.style.borderColor = "#e67e22"; // Orange border = Unsaved Draft
-    input.title = "Restored from unsaved draft";
-  } else {
-    input.value = githubValue;
-  }
-
+  let input = field.type === "textarea" ? document.createElement("textarea") : document.createElement("input");
+  if (field.type !== "textarea") input.type = "text";
+  
+  input.style.width = "100%";
+  input.style.padding = "8px";
   input.dataset.field = field.name;
 
-  // Save to LocalStorage on typing
+  // Restore draft if exists
+  const draftKey = `draft_${currentSection}_${field.name}`;
+  const localDraft = localStorage.getItem(draftKey);
+  input.value = (localDraft !== null) ? localDraft : githubValue;
+
   input.addEventListener("input", (e) => {
     localStorage.setItem(draftKey, e.target.value);
-    input.style.borderColor = "#e67e22"; 
+    updateStatus();
   });
 
   wrapper.appendChild(label);
@@ -84,139 +98,79 @@ function createField(field, githubValue = "") {
   form.appendChild(wrapper);
 }
 
-// ---------- load YAML (via API to avoid Cache) ----------
+// ---------- API Logic ----------
 async function loadSection(section) {
   clearForm();
-  form.innerHTML = "<p style='color:#666;'>Chargement depuis GitHub API...</p>";
-  
-  const schema = SCHEMA[section];
-  if (!schema) return;
+  statusText.textContent = "Chargement...";
+  statusDot.style.backgroundColor = "#bbb";
 
-  let data = {};
-  
-  // 1. Construct API URL instead of Raw URL
-  const path = schema.file;
-  const api = `https://api.github.com/repos/toulouse-pro/pros/contents/${path}`;
+  const schema = SCHEMA[section];
+  const api = `https://api.github.com/repos/toulouse-pro/pros/contents/${schema.file}`;
 
   try {
-    // 2. Fetch using Token (Higher limits + No Cache)
-    const headers = {};
-    if (GITHUB_TOKEN) {
-        headers.Authorization = `Bearer ${GITHUB_TOKEN}`;
-    }
+    const res = await fetch(`${api}?t=${Date.now()}`, {
+      headers: { Authorization: `Bearer ${GITHUB_TOKEN}` }
+    });
 
-    // Add timestamp to strictly bypass browser cache
-    const res = await fetch(`${api}?t=${Date.now()}`, { headers });
-    
     if (res.ok) {
       const json = await res.json();
-      
-      // 3. Decode Base64 (Handling accents/UTF-8 correctly)
       const yamlContent = decodeURIComponent(escape(atob(json.content)));
+      serverData = jsyaml.load(yamlContent) || {};
       
-      data = jsyaml.load(yamlContent) || {};
-    } else {
-       console.warn("Fichier non trouvé ou erreur API");
+      schema.fields.forEach(f => createField(f, serverData[f.name] || ""));
+      updateStatus();
     }
   } catch (e) {
-    console.warn("Erreur de chargement", e);
-    form.innerHTML = "<p style='color:red;'>Erreur de connexion à GitHub.</p>";
-    return;
+    statusText.textContent = "Erreur de connexion";
+    statusDot.style.backgroundColor = "red";
   }
-
-  // 4. Build Form
-  clearForm();
-  schema.fields.forEach(f => {
-    createField(f, data[f.name] || "");
-  });
 }
-// ---------- Reset / Discard ----------
-resetBtn.onclick = () => {
-  if (confirm("Voulez-vous vraiment annuler vos modifications locales et recharger depuis GitHub ?")) {
-    const schema = SCHEMA[currentSection];
-    // 1. Clear drafts for this section
-    schema.fields.forEach(f => {
-        localStorage.removeItem(`draft_${currentSection}_${f.name}`);
-    });
-    // 2. Reload
-    loadSection(currentSection);
-  }
-};
 
-// ---------- save (Smart Merge) ----------
 saveBtn.onclick = async () => {
-  if (!GITHUB_TOKEN) return alert("Token manquant !");
-
-  saveBtn.textContent = "Envoi...";
   saveBtn.disabled = true;
-
+  saveBtn.textContent = "Envoi...";
+  
   const schema = SCHEMA[currentSection];
   const inputs = form.querySelectorAll("[data-field]");
-  const path = schema.file;
-  const api = `https://api.github.com/repos/toulouse-pro/pros/contents/${path}`;
-
-  let existingData = {};
-  let sha = null;
+  const api = `https://api.github.com/repos/toulouse-pro/pros/contents/${schema.file}`;
 
   try {
-      // 1. Get current data (API is fresher than raw)
-      const res = await fetch(api, { headers: { Authorization: `Bearer ${GITHUB_TOKEN}` } });
+    // 1. Get current SHA
+    const res = await fetch(api, { headers: { Authorization: `Bearer ${GITHUB_TOKEN}` } });
+    const json = await res.json();
+    const sha = json.sha;
 
-      if (res.ok) {
-        const json = await res.json();
-        sha = json.sha;
-        const existingYaml = decodeURIComponent(escape(atob(json.content)));
-        existingData = jsyaml.load(existingYaml) || {};
-      }
+    // 2. Prepare Data
+    let payload = {};
+    inputs.forEach(i => payload[i.dataset.field] = i.value);
+    const yaml = jsyaml.dump(payload, { lineWidth: 1000 });
+    const content = btoa(unescape(encodeURIComponent(yaml)));
 
-      // 2. Merge UI data
-      inputs.forEach(i => {
-        existingData[i.dataset.field] = i.value;
-      });
+    // 3. Push to GitHub
+    const commit = await fetch(api, {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ message: `Edit ${currentSection}`, content, sha })
+    });
 
-      // 3. Upload
-      const yaml = jsyaml.dump(existingData, { lineWidth: 1000 });
-      const content = btoa(unescape(encodeURIComponent(yaml)));
-
-      const commit = await fetch(api, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${GITHUB_TOKEN}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          message: `Update ${currentSection}`,
-          content,
-          sha
-        })
-      });
-
-      if (commit.ok) {
-        alert("✅ Sauvegardé !");
-        
-        // KEY FIX: Clear drafts ONLY after success
-        inputs.forEach(i => {
-           localStorage.removeItem(`draft_${currentSection}_${i.dataset.field}`);
-        });
-
-        loadSection(currentSection); 
-      } else {
-        alert("❌ Erreur de sauvegarde");
-      }
-  } catch (error) {
-      console.error(error);
-      alert("❌ Erreur réseau");
+    if (commit.ok) {
+      // Clear drafts and update serverData locally to avoid a full re-fetch
+      inputs.forEach(i => localStorage.removeItem(`draft_${currentSection}_${i.dataset.field}`));
+      serverData = payload; 
+      updateStatus();
+      alert("✅ Enregistré !");
+    }
+  } catch (e) {
+    alert("❌ Erreur lors de l'enregistrement");
   } finally {
-      saveBtn.textContent = "Sauvegarder sur GitHub";
-      saveBtn.disabled = false;
+    saveBtn.disabled = false;
+    saveBtn.textContent = "Sauvegarder sur GitHub";
   }
 };
 
-// ---------- events ----------
 sectionSelect.onchange = () => {
   currentSection = sectionSelect.value;
   loadSection(currentSection);
 };
 
-// ---------- init ----------
 loadSection(currentSection);
