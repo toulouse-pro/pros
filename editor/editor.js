@@ -1,75 +1,86 @@
-const OWNER = "toulouse-pro";
-const REPO = "pros";
-const BRANCH = "main";
-const FILE_PATH = `_data/${currentSection}.yml`;
+const sectionSelect = document.getElementById("section");
+const form = document.getElementById("form");
+const saveBtn = document.getElementById("save");
 
-let token = localStorage.getItem("gh_token");
+let currentSection = sectionSelect.value;
 
-if (!token) {
-  token = prompt("Paste your GitHub token");
-  localStorage.setItem("gh_token", token);
-}
-
-async function github(url, options = {}) {
-  return fetch(`https://api.github.com${url}`, {
-    ...options,
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Accept": "application/vnd.github+json"
-    }
-  });
-}
-
-async function loadContent() {
-  const res = await github(`/repos/${OWNER}/${REPO}/contents/${FILE_PATH}`);
-  const file = await res.json();
-  const yaml = atob(file.content);
-  const data = jsyaml.load(yaml);
-
-  window._sha = file.sha;
-
-  const form = document.getElementById("form");
+// ---------- helpers ----------
+function clearForm() {
   form.innerHTML = "";
-
-  for (const key in data) {
-    const label = document.createElement("label");
-    label.textContent = key;
-
-    const input = document.createElement(
-      typeof data[key] === "string" && data[key].length > 60
-        ? "textarea"
-        : "input"
-    );
-
-    input.value = data[key];
-    input.dataset.key = key;
-
-    form.appendChild(label);
-    form.appendChild(input);
-  }
 }
 
-async function saveContent() {
-  const inputs = document.querySelectorAll("[data-key]");
-  const data = {};
+function createField(field, value = "") {
+  const wrapper = document.createElement("div");
+  wrapper.style.marginBottom = "12px";
 
-  inputs.forEach(i => data[i.dataset.key] = i.value);
+  const label = document.createElement("label");
+  label.textContent = field.label;
+  label.style.display = "block";
+  label.style.fontWeight = "600";
 
-  const yaml = jsyaml.dump(data);
-  const content = btoa(unescape(encodeURIComponent(yaml)));
+  let input;
+  if (field.type === "textarea") {
+    input = document.createElement("textarea");
+    input.rows = 4;
+  } else {
+    input = document.createElement("input");
+    input.type = "text";
+  }
 
-  await github(`/repos/${OWNER}/${REPO}/contents/${FILE_PATH}`, {
-    method: "PUT",
-    body: JSON.stringify({
-      message: "Update accueil via editor",
-      content,
-      sha: window._sha,
-      branch: BRANCH
-    })
+  input.value = value;
+  input.dataset.field = field.name;
+  input.style.width = "100%";
+
+  wrapper.appendChild(label);
+  wrapper.appendChild(input);
+  form.appendChild(wrapper);
+}
+
+// ---------- load YAML ----------
+async function loadSection(section) {
+  clearForm();
+
+  const schema = SCHEMA[section];
+  if (!schema) return;
+
+  let data = {};
+  try {
+    const res = await fetch(`/${schema.file}`);
+    const text = await res.text();
+    data = jsyaml.load(text) || {};
+  } catch (e) {
+    console.warn("No existing YAML, starting fresh");
+  }
+
+  schema.fields.forEach(f => {
+    createField(f, data[f.name] || "");
+  });
+}
+
+// ---------- save ----------
+saveBtn.onclick = async () => {
+  const schema = SCHEMA[currentSection];
+  const inputs = form.querySelectorAll("[data-field]");
+  const obj = {};
+
+  inputs.forEach(i => {
+    obj[i.dataset.field] = i.value;
   });
 
-  alert("Saved to GitHub");
-}
+  const yaml = jsyaml.dump(obj, { lineWidth: 1000 });
 
-document.getElementById("save").onclick = saveContent;
-loadContent();
+  alert(
+    "YAML prêt à être envoyé à GitHub:\n\n" +
+    yaml +
+    "\n\n(Prochaine étape: commit GitHub)"
+  );
+};
+
+// ---------- events ----------
+sectionSelect.onchange = () => {
+  currentSection = sectionSelect.value;
+  loadSection(currentSection);
+};
+
+// ---------- init ----------
+loadSection(currentSection);
