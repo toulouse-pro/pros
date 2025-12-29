@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <title>Mon Restaurant — Ma Spécialité à Toulouse</title>
+  <meta name="description" content="Mon Entreprise — découvrez nos services et produits à Toulouse. Horaires, photos, avis clients et contact. Passez nous voir !">
+  <meta name="keywords" content="entreprise, services, produits, Toulouse, professionnel, horaires, contact">
+  <meta name="author" content="Nom de l'entreprise">
+  <link rel="canonical" href="https://www.site.com/">
+  <meta name="robots" content="index, follow">
+
+  <style>
+    :root {
+      --bg: #fff;
+      --accent: #d99a3b;
+      --body-nava-cook-c: #111;
+      --hamb-bg: #222;
+      --b-s-c-r: #fff;
+      --muted: #6b6b6b;
+      --max-width: 700px;
+      --radius: 10px;
+      --shadow: 0 6px 22px rgba(0,0,0,0.08);
+    }
+
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--bg);
+      color: var(--body-nava-cook-c);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+   .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; gap: 12px; align-items: center;
+      /*padding: 10px 12px;*/
+      background: var(--bg);
+      box-shadow: var(--shadow);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+     display: block;
+    }
+
+    .topbar .inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+}
+
+    .hamburger {
+      width: 44px; height: 44px;
+      display: grid; place-items: center;
+      background: var(--bg);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0,0,0,0.04);
+      cursor: pointer;
+    }
+
+    .hamburger .bars {
+      width: 22px; height: 2px;
+      background: #222;
+      box-shadow: 0 6px 0 #222, 0 -6px 0 #222;
+      border-radius: 2px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding-left: 6px;
+    }
+
+    .brand .name {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #111;
+    }
+
+    .brand .tag {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    nav.site-nav {
+      position: fixed;
+      left: 0; /*left: 12px;*/
+      top: 72px;
+      z-index: 999;
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(6px);
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: var(--shadow);
+      max-width: 240px;
+      margin-left: calc((100vw - var(--max-width)) / 2 + 20px);
+      display: none;
+    }
+
+    nav.site-nav a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: #111;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    nav.site-nav a:hover {
+      background: rgba(217,154,59,0.08);
+    }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 60px 20px 90px;
+    }
+
+    header.hero {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+      padding: 28px 12px 5px;
+      border-radius: 12px;
+      margin-top: 20px;
+      background: linear-gradient(180deg, rgba(217,154,59,0.06), rgba(217,154,59,0.02));
+    }
+
+    .hero-left { flex: 1; min-width: 240px; }
+    .hero-right { max-width: 700px; flex-shrink: 0; }
+    .hero h1 { margin: 0; font-family: 'Playfair Display', serif; font-size: 2rem; }
+    .hero p.lead { color: var(--muted); margin: 8px 0 16px; }
+
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .cta-row .btn {
+      flex: 1 1 calc(50% - 6px);
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(217,154,59,0.18);
+    }
+
+    .btn.secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid rgba(217,154,59,0.15);
+      box-shadow: none;
+    }
+
+    img, .gallery img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      border-radius: 12px;
+      display: block;
+    }
+
+    img.popup-img { cursor: pointer; }
+    img:not(.popup-img) { cursor: default; }
+
+    section:not(#accueil) {
+      margin-top: 18px;
+      padding: 22px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 400px) {
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+    .hours {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .hours td {
+      padding: 6px 8px;
+      border-bottom: 1px dashed #f0f0f0;
+    }
+
+    .review {
+      padding: 10px;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .stars {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .map {
+      width: 100%;
+      height: 300px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    footer {
+      padding: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 28px 5px 18px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.7);
+      z-index: 2000;
+      padding: 20px;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal.visible {
+      display: flex;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal img {
+      max-width: min(95%, 700px);
+      max-height: 85%;
+      border-radius: 8px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+      cursor: default;
+    }
+
+    .menu-modal {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 9999;
+    }
+
+    .menu-modal.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .menu-content {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: var(--shadow);
+      position: relative;
+      font-family: Inter, system-ui;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .menu-content h2 {
+      font-family: 'Playfair Display', serif;
+      color: #111;
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .close-menu {
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--muted);
+    }
+
+    .close-menu:hover {
+      color: var(--accent);
+    }
+
+    .cookie-banner {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      background: var(--bg);
+      color: #111;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 10px;
+      width: 90%;
+      max-width: 350px;
+      font-family: Inter, system-ui, sans-serif;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 5000;
+      opacity: 0;
+      transform: translate(-50%, 20px);
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    .cookie-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .cookie-btn {
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .cookie-btn.accept {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(217,154,59,0.2);
+    }
+
+    .cookie-btn.accept:hover {
+      background: #c5862e;
+    }
+
+    .cookie-btn.decline {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .cookie-btn.decline:hover {
+      color: #111;
+      border-color: rgba(0,0,0,0.2);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, 20px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    @media (max-width: 800px) {
+      .hero { flex-direction: column; }
+      nav.site-nav { left: 12px; right: 12px; }
+      .hero-right { width: 100%; }
+    }
+
+    @media (max-width: 600px) {
+      .hero { flex-direction: column; }
+      .hero-right { width: 100%; }
+      .container { padding: 60px 12px 80px; }
+      header.hero { flex-direction: column; padding: 20px 12px; }
+      .btn { flex: 1; text-align: center; }
+      nav.site-nav { width: calc(100% - 24px); left: 12px; right: 12px; max-width: 150px; margin-left: 12px; }
+      .topbar .inner { padding: 10px 12px; }
+    }
+    
+   /* @media (max-width: 600px) {
+      .container { padding: 60px 12px 80px; }
+      header.hero { flex-direction: column; padding: 20px 12px; }
+      .btn { flex: 1; text-align: center; }
+      nav.site-nav { width: calc(100% - 24px); left: 12px; right: 12px; }
+    }*/
+    /* --- CORE MODAL STYLES --- */
+#promo-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none; /* Hidden by default */
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.75);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(5px);
+  padding: 15px;
+}
+
+#promo-modal.active {
+  display: flex;
+  opacity: 1;
+}
+
+#fireworks-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.promo-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: clamp(20px, 4vh, 30px);
+  border-radius: 20px;
+  text-align: center;
+  width: 100%;
+  max-width: 320px;
+  /* Crucial for small screens: allows scrolling if content is too tall */
+  max-height: 90vh; 
+  overflow-y: auto; 
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  transform: scale(0.9);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-family: sans-serif; /* Default font fallback */
+}
+
+#promo-modal.active .promo-card {
+  transform: scale(1);
+}
+
+.promo-close {
+  position: absolute;
+  top: 10px; 
+  right: 10px;
+  background: rgba(0,0,0,0.1);
+  border: none;
+  border-radius: 50%;
+  width: 30px; 
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  z-index: 20;
+}
+
+.promo-emoji { 
+  font-size: 3.5rem;
+  line-height: 1;
+  animation: spin-twist 4s ease-in-out infinite;
+}
+
+@keyframes spin-twist {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(360deg); }
+  80% { transform: rotate(360deg); }
+}
+
+.promo-title {
+  font-size: 1.5rem;
+  margin: 0;
+  font-weight: 800;
+  color: #111;
+}
+
+.promo-desc { 
+  font-size: 0.9rem;
+  color: #555;
+  margin: 5px 0 0 0;
+}
+
+.discount-badge {
+  background: #000;
+  color: #fff;
+  font-weight: 700;
+  padding: 6px 15px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+}
+
+.code-box {
+  background: #fff;
+  border: 1px dashed #d99a3b; /* Gold color */
+  padding: 10px;
+  border-radius: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.code-label { 
+  font-size: 0.6rem; 
+  text-transform: uppercase; 
+  color: #888; 
+  display: block; 
+}
+
+.code-val { 
+  font-family: monospace; 
+  font-size: 1.4rem; 
+  font-weight: 700; 
+  color: #d99a3b; 
+}
+
+.silly-note { 
+  font-size: 0.7rem; 
+  color: #999; 
+  margin: 0; 
+}
+
+/* --- THE TILT / LANDSCAPE FIX --- */
+/* This targets screens that are short (landscape mobile) */
+@media (max-height: 500px) and (orientation: landscape) {
+  .promo-card {
+    max-width: 550px; /* Make it wider */
+    flex-direction: row; /* Stack items left-to-right instead of top-to-bottom */
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 15px 35px 15px 15px; /* Add padding right for close button */
+    gap: 10px;
+  }
+
+  .promo-emoji { 
+    font-size: 2rem; /* Make emoji smaller */
+    flex: 0 0 auto; 
+  }
+
+  .promo-text-content { 
+    flex: 1; 
+    text-align: left; 
+  }
+  
+  .promo-title { font-size: 1.2rem; }
+  
+  /* Hide non-essential items to save vertical space */
+  .promo-desc, 
+  .silly-note { 
+    display: none; 
+  } 
+
+  .code-box {
+    width: auto;
+    flex: 0 0 auto;
+    padding: 5px 15px;
+  }
+}
+
+  </style>
+</head>
+
+<body>
+  <section id=accueil>
+  <div class="topbar">
+     <div class="inner">
+    <button class="hamburger" id="hamburger" aria-expanded="false" aria-controls="site-nav" aria-label="Ouvrir le menu">
+      <span class="bars"></span>
+    </button>
+    <a href="../../index.html" style="text-decoration: none; color: inherit;">
+      <div class="brand">
+        <span class="name">Mon Restaurant</span>
+        <span class="tag">Ma Spécialité — Toulouse</span>
+      </div>
+    </a>
+     </div>
+  </div>
+  </section>
+
+  <nav class="site-nav" id="site-nav" aria-hidden="true">
+    <a href="#accueil">Accueil</a>
+    <a href="#avis">Avis</a>
+    <a href="#horaires">Horaires</a>
+    <a href="#photos">Photos</a>
+    <a href="#menu">Spécialités</a>
+    <a href="#carte">Nous trouver</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <main class="container" id="top">
+    <header class="hero" role="banner" aria-label="Présentation">
+      <div class="hero-left">
+        <div class="hero-right">
+          <img src="../../images/Front.jpg" alt="Vitrine">
+        </div>
+        <div style="margin-top:12px;" class="muted">
+          <p class="lead">Produits et services de qualité, conçus avec passion et savoir-faire — votre satisfaction au cœur de notre engagement depuis 1907.</p>
+        </div>
+        <div class="cta-row">
+          <a href="#" class="btn secondary" id="openMenu">Menu</a>
+          <a href="#" class="btn secondary" id="openReserver">Réserver</a>
+        </div>
+      </div>
+    </header>
+
+    <section id="avis" aria-labelledby="avis-title">
+      <div class="section-title"><h2 id="avis-title">Avis clients</h2><span class="muted">Ce que disent nos clients</span></div>
+      <div style="display:flex;gap:16px;align-items:center;">
+        <div style="font-size:28px;font-weight:700;color:var(--accent);">4.8</div>
+        <div>
+          <div class="muted">Note moyenne — basé sur 124 avis</div>
+          <div class="stars" aria-hidden="true">★★★★★</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
+        <div class="review">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong>Julie P.</strong><span class="stars">★★★★★</span>
+          </div>
+          <p class="muted" style="margin:8px 0 0;">Les produits sont incroyables. Service chaleureux, une adresse incontournable.</p>
+        </div>
+        <div class="review">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong>Marc L.</strong><span class="stars">★★★★☆</span>
+          </div>
+          <p class="muted" style="margin:8px 0 0;">Qualité excellente. Un peu d’attente aux heures de pointe mais ça vaut la peine.</p>
+        </div>
+        <div class="review">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong>Camille R.</strong><span class="stars">★★★★★</span>
+          </div>
+          <p class="muted" style="margin:8px 0 0;">Produits de qualité et bien présentés, parfait pour les occasions spéciales.</p>
+        </div>
+        <div class="review">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong>Alex D.</strong><span class="stars">★★★★☆</span>
+          </div>
+          <p class="muted" style="margin:8px 0 0;">Bonne expérience globale. Service correct.</p>
+        </div>
+      </div>
+      <p style="margin-top:12px;" class="muted">Vous avez aimé ? <a href="mailto:contact@example.com">Laissez-nous un avis</a> ou sur Google / Facebook.</p>
+    </section>
+
+    <section id="..." aria-labelledby="...-title">
+      <div class="section-title"><h2 id="...">Bienvenue chez vous !</h2></div>
+      <div class="hero-left">
+        <div class="hero-right">
+          <img src="../../images/template/table/Chef.jpg" alt="Chef">
+        </div>
+        <div class="card">
+          <p class="muted">Nous sommes ravis de vous accompagner et de répondre à vos besoins avec attention et professionnalisme.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="horaires" aria-labelledby="horaires-title">
+      <div class="section-title"><h2 id="horaires-title">Horaires</h2></div>
+      <table class="hours" aria-describedby="horaires-desc">
+        <tbody>
+          <tr><td>Lundi</td><td>Fermé</td></tr>
+          <tr><td>Mardi</td><td>12:00 — 14:00<br>19:00 — 22:00</td></tr>
+          <tr><td>Mercredi</td><td>12:00 — 14:00<br>19:00 — 22:00</td></tr>
+          <tr><td>Jeudi</td><td>12:00 — 14:00<br>19:00 — 22:00</td></tr>
+          <tr><td>Vendredi</td><td>12:00 — 14:00<br>19:00 — 22:00</td></tr>
+          <tr><td>Samedi</td><td>12:00 — 14:00<br>19:00 — 22:00</td></tr>
+          <tr><td>Dimanche</td><td>12:00 — 16:00</td></tr>
+        </tbody>
+      </table>
+      <p id="horaires-desc" class="muted">Fermé les jours fériés — Spécialités sur commande.</p>
+    </section>
+
+    <section id="photos" aria-labelledby="photos-title">
+      <div class="section-title"><h2 id="photos-title">Photos</h2><span class="muted">Notre Sélection</span></div>
+      <div class="gallery" id="gallery">
+        <img loading="lazy" src="../../images/template/table/Restaurant.jpg" alt="inside 1" class="popup-img">
+        <img loading="lazy" src="../../images/template/table/Table.png" alt="inside 2" class="popup-img">
+        <img loading="lazy" src="../../images/template/table/3.jpg" alt="inside 3" class="popup-img">
+        <img loading="lazy" src="../../images/template/table/Cocktail.jpg" alt="inside 4" class="popup-img">
+        <img loading="lazy" src="../../images/template/table/5.jpg" alt="inside 5" class="popup-img">
+        <img loading="lazy" src="../../images/template/table/6.jpg" alt="inside 6" class="popup-img">
+        <img loading="lazy" src="../../images/template/table/7.jpg" alt="inside 7" class="popup-img">
+        <img loading="lazy" src="../../images/template/table/8.jpg" alt="inside 8" class="popup-img">
+      </div>
+    </section>
+
+    <section id="menu" aria-labelledby="menu-title">
+      <div class="section-title"><h2 id="menu-title">Spécialités</h2><span class="muted">Choisissez vos favoris</span></div>
+      <div class="info-row">
+        <div class="card">
+          <h3 style="margin:0 0 6px 0;">Nos Produits Phares</h3>
+          <p class="muted">Produit classique. Produit complet. Produit traditionnel.</p>
+        </div>
+        <div class="card">
+          <h3 style="margin:0 0 6px 0;">Nos Spécialités</h3>
+          <p class="muted">Spécialité maison. Spécialité populaire. Spécialité artisanale.</p>
+        </div>
+        <div class="card">
+          <h3 style="margin:0 0 6px 0;">Services sur mesure</h3>
+          <p class="muted">Prestations adaptées. Solutions personnalisées. Créations exclusives (sur commande).</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="carte" aria-labelledby="carte-title">
+      <div class="section-title"><h2 id="carte-title">Nous trouver</h2><span class="muted">Plan et itinéraire</span></div>
+      <div class="map">
+        <iframe title="Mon Commerce Spécialisé" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2888.278973552961!2d1.4125611752737637!3d43.62155225447857!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12aebb303d6a08b9%3A0xa3e9906247b3992!2sStade%20Toulousain!5e0!3m2!1sen!2sde!4v1759135891249!5m2!1sen!2sde" style="width:100%;height:100%;border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </section>
+
+    <section id="contact" aria-labelledby="contact-title">
+      <aside style="display:flex;flex-direction:column;gap:8px;">
+        <div class="card">
+          <strong>Adresse</strong>
+          <div class="muted">114 rue des Troènes, 31200 Toulouse</div>
+          <div style="margin-top:8px;"><strong>Téléphone</strong><div class="muted"><a href="tel:+33123456789">01 23 45 67 89</a></div></div>
+          <div style="margin-top:8px;"><strong>Email</strong><div class="muted"><a href="mailto:contact@example.com"><span id="email-text">contact@example.com</span></a>
+            <i class="fa-regular fa-clone" id="copy-icon" style="cursor: pointer; margin-left: 8px;" title="Copy to clipboard"></i>
+            <span id="copied-popup" style="display:none; margin-left: 10px; color: blue; font-size: 0.8rem;">Copié !</span>
+          </div>
+          <div style="margin-top:8px;"><strong>Réseaux Sociaux</strong><div class="muted"><a href="https://facebook.com" aria-label="Facebook">Facebook</a> • <a href="https://instagram.com" aria-label="Instagram">Instagram</a></div></div>
+        </div>
+      </aside>
+    </section>
+
+    <footer>
+      © Mon Commerce Spécialisé — Tous droits réservés — <span class="muted">Site développé avec <a href="#" id="heart-trigger" style="font-size: 1.5rem; text-decoration: none;">💙</a>
+
+<div id="promo-modal">
+  <canvas id="fireworks-canvas"></canvas>
+  <div class="promo-card">
+    <button class="promo-close" id="promo-close" aria-label="Fermer">✕</button>
+    <span class="promo-emoji">🥦</span>
+    <div class="promo-text-content">
+      <h2 class="promo-title">Félicitations !</h2>
+      <p class="promo-desc">Vous avez débloqué le secret.</p>
+    </div>
+    
+    <div class="discount-badge">9€ offerts</div>
+    
+    <div class="code-box">
+      <span class="code-label">CODE PRIVILEGE</span>
+      <div class="code-val">ARTICHAUT</div>
+    </div>
+    
+    <p class="silly-note">Valable sur tout le site - Non cumulable</p>
+  </div>
+</div>
+
+        <!-- <a href="../../web-bo-deal.html" style="text-decoration: none;">💙</a></span> -->
+    </footer>
+  </main>
+
+  <div class="modal" id="imgModal" aria-hidden="true">
+    <img id="modalImg" alt="">
+  </div>
+
+  <div class="menu-modal" id="menuModal" aria-hidden="true">
+    <div class="menu-content">
+      <button class="close-menu" id="closeMenu" aria-label="Fermer le menu">&times;</button>
+      <h2>Notre Menu</h2>
+      <p class="muted">Découvrez nos spécialités, nos plats faits maison, et nos produits du terroir.</p>
+      <ul class="muted">
+        <li>🥖 Pain de campagne croustillant</li>
+        <li>🧀 Plateau de fromages régionaux</li>
+        <li>🍷 Sélection de vins de Toulouse</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="menu-modal" id="reserverModal" aria-hidden="true">
+    <div class="menu-content" style="max-width:350px;padding:18px 20px;">
+      <button class="close-menu" id="closeReserver" aria-label="Fermer le popup">&times;</button>
+      <h2>Réserver</h2>
+      <p class="muted">Suggestions de plateformes de réservation :</p>
+      <ul class="muted" style="padding-left:20px; margin:12px 0; list-style:none;">
+        <li>📅 Sunday</li>
+        <li>💳 L’Addition</li>
+        <li>🍴 TheFork</li>
+        <li>👩‍🍳 Zenchef</li>
+        <li>🖥️ Guestonline</li>
+        <li>📲 Resy</li>
+        <li>🏢 SevenRooms</li>
+        <li>🌐 OpenTable</li>
+        <li>🗓️ TableOnline</li>
+      </ul>
+      <p class="muted">Ou si vous préférez parler à quelqu’un : appelez-nous !</p>
+      <ul class="muted" style="padding-left:20px; margin:12px 0; list-style:none;">
+        <li>☎️ 01 23 45 67 89</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="cookie-banner" class="cookie-banner">
+    <span>🍪 Ce site utilise des cookies</span>
+    <div class="cookie-actions">
+      <button id="cookie-accept" class="cookie-btn accept">OK</button>
+      <button id="cookie-decline" class="cookie-btn decline">Non, merci</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // NAV toggle
+      const hamburger = document.getElementById('hamburger');
+      const nav = document.getElementById('site-nav');
+      if (hamburger && nav) {
+        hamburger.addEventListener('click', () => {
+          const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+          hamburger.setAttribute('aria-expanded', String(!expanded));
+          nav.style.display = nav.style.display === 'block' ? 'none' : 'block';
+          nav.setAttribute('aria-hidden', String(expanded));
+        });
+
+        nav.querySelectorAll('a').forEach(a => {
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = document.querySelector(a.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            nav.style.display = 'none';
+            nav.setAttribute('aria-hidden', 'true');
+            hamburger.setAttribute('aria-expanded', 'false');
+          });
+        });
+      }
+
+      // IMAGE modal
+      const modal = document.getElementById('imgModal');
+      const modalImg = document.getElementById('modalImg');
+      document.querySelectorAll('.popup-img').forEach(img => {
+        img.addEventListener('click', (e) => {
+          modalImg.src = img.dataset.large || img.src;
+          modalImg.alt = img.alt || '';
+          modal.classList.add('visible');
+          modal.setAttribute('aria-hidden', 'false');
+          e.stopPropagation();
+        });
+      });
+      modal.addEventListener('click', () => {
+        modal.classList.remove('visible');
+        modal.setAttribute('aria-hidden', 'true');
+        modalImg.src = '';
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('visible')) {
+          modal.classList.remove('visible');
+          modal.setAttribute('aria-hidden', 'true');
+          modalImg.src = '';
+        }
+      });
+
+      // MENU modal
+      const openMenuBtn = document.getElementById('openMenu');
+      const closeMenuBtn = document.getElementById('closeMenu');
+      const menuModal = document.getElementById('menuModal');
+      if (openMenuBtn && closeMenuBtn && menuModal) {
+        openMenuBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          menuModal.classList.add('visible');
+          menuModal.setAttribute('aria-hidden', 'false');
+        });
+        closeMenuBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          menuModal.classList.remove('visible');
+          menuModal.setAttribute('aria-hidden', 'true');
+        });
+        menuModal.addEventListener('click', (e) => {
+          if (e.target === menuModal) {
+            menuModal.classList.remove('visible');
+            menuModal.setAttribute('aria-hidden', 'true');
+          }
+        });
+      }
+
+      // RÉSERVER modal
+      const openReserverBtn = document.getElementById('openReserver');
+      const closeReserverBtn = document.getElementById('closeReserver');
+      const reserverModal = document.getElementById('reserverModal');
+      if (openReserverBtn && closeReserverBtn && reserverModal) {
+        openReserverBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          reserverModal.classList.add('visible');
+          reserverModal.setAttribute('aria-hidden', 'false');
+        });
+        closeReserverBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          reserverModal.classList.remove('visible');
+          reserverModal.setAttribute('aria-hidden', 'true');
+        });
+        reserverModal.addEventListener('click', (e) => {
+          if (e.target === reserverModal) {
+            reserverModal.classList.remove('visible');
+            reserverModal.setAttribute('aria-hidden', 'true');
+          }
+        });
+      }
+
+      // EMAIL copy
+      const copyIcon = document.getElementById('copy-icon');
+      const emailText = document.getElementById('email-text')?.innerText || '';
+      const copiedPopup = document.getElementById('copied-popup');
+      if (copyIcon && copiedPopup) {
+        copyIcon.addEventListener('click', () => {
+          navigator.clipboard.writeText(emailText).then(() => {
+            copiedPopup.style.display = 'inline';
+            setTimeout(() => { copiedPopup.style.display = 'none'; }, 2000);
+          }).catch(err => console.error('Échec de la copie :', err));
+        });
+      }
+
+      // COOKIE banner
+      const banner = document.getElementById('cookie-banner');
+      const acceptBtn = document.getElementById('cookie-accept');
+      const declineBtn = document.getElementById('cookie-decline');
+      if (banner && acceptBtn && declineBtn) {
+        if (localStorage.getItem('cookieConsent')) {
+          banner.style.display = 'none';
+          banner.setAttribute('aria-hidden', 'true');
+        }
+        acceptBtn.addEventListener('click', () => {
+          localStorage.setItem('cookieConsent', 'true');
+          hideBanner();
+        });
+        declineBtn.addEventListener('click', () => {
+          localStorage.setItem('cookieConsent', 'false');
+          hideBanner();
+        });
+        function hideBanner() {
+          banner.style.opacity = '0';
+          setTimeout(() => {
+            banner.style.display = 'none';
+            banner.setAttribute('aria-hidden', 'true');
+          }, 300);
+        }
+      }
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+  // Elements
+  const heartTrigger = document.getElementById('heart-trigger');
+  const promoModal = document.getElementById('promo-modal');
+  const closePromoBtn = document.getElementById('promo-close');
+  const canvas = document.getElementById('fireworks-canvas');
+  const ctx = canvas.getContext('2d');
+  
+  // Variables
+  let animationId;
+  let particles = [];
+  let w, h;
+
+  // Resize canvas to fill screen
+  function resizeCanvas() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+
+  // Helper: Random number
+  function random(min, max) { return Math.random() * (max - min) + min; }
+
+  // Particle Class for Fireworks
+  class Particle {
+    constructor(x, y, color) {
+      this.x = x;
+      this.y = y;
+      this.color = color;
+      const angle = random(0, Math.PI * 2);
+      const speed = random(1, 6);
+      this.vx = Math.cos(angle) * speed;
+      this.vy = Math.sin(angle) * speed;
+      this.alpha = 1;
+      this.decay = random(0.015, 0.03);
+      this.gravity = 0.05;
+    }
+    update() {
+      this.vx *= 0.95; 
+      this.vy *= 0.95; 
+      this.vy += this.gravity;
+      this.x += this.vx;
+      this.y += this.vy;
+      this.alpha -= this.decay;
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  // Create Explosion
+  function createFirework() {
+    const x = random(w * 0.1, w * 0.9);
+    const y = random(h * 0.1, h * 0.5);
+    const colors = ['#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#d99a3b', '#ffffff'];
+    const color = colors[Math.floor(random(0, colors.length))];
+    
+    for (let i = 0; i < 40; i++) {
+      particles.push(new Particle(x, y, color));
+    }
+  }
+
+  // Animation Loop
+  function animate() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    ctx.fillRect(0, 0, w, h);
+
+    if (Math.random() < 0.05) createFirework(); 
+
+    particles.forEach((p, index) => {
+      p.update();
+      p.draw();
+      if (p.alpha <= 0) particles.splice(index, 1);
+    });
+
+    if (promoModal.classList.contains('active')) {
+      animationId = requestAnimationFrame(animate);
+    }
+  }
+
+  // Open Function
+  function openPromo() {
+    resizeCanvas();
+    promoModal.classList.add('active');
+    particles = [];
+    createFirework(); createFirework(); // Start with a bang
+    animate();
+  }
+
+  // Close Function
+  function closePromo() {
+    promoModal.classList.remove('active');
+    cancelAnimationFrame(animationId);
+    ctx.clearRect(0,0,w,h);
+  }
+
+  // Events
+  if(heartTrigger) {
+    heartTrigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      openPromo();
+    });
+  }
+
+  if(closePromoBtn) {
+    closePromoBtn.addEventListener('click', closePromo);
+  }
+  
+  // Close on outside click
+  promoModal.addEventListener('click', (e) => {
+    if(e.target === promoModal || e.target === canvas) closePromo();
+  });
+  
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && promoModal.classList.contains('active')) {
+      closePromo();
+    }
+  });
+});
+  </script>
+</body>
+</html>
