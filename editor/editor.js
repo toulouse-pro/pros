@@ -84,34 +84,52 @@ function createField(field, githubValue = "") {
   form.appendChild(wrapper);
 }
 
-// ---------- load YAML ----------
+// ---------- load YAML (via API to avoid Cache) ----------
 async function loadSection(section) {
   clearForm();
-  form.innerHTML = "<p>Chargement des données...</p>";
+  form.innerHTML = "<p style='color:#666;'>Chargement depuis GitHub API...</p>";
   
   const schema = SCHEMA[section];
   if (!schema) return;
 
   let data = {};
+  
+  // 1. Construct API URL instead of Raw URL
+  const path = schema.file;
+  const api = `https://api.github.com/repos/toulouse-pro/pros/contents/${path}`;
+
   try {
-    // KEY FIX: Add timestamp to prevent caching (?t=...)
-    const url = `https://raw.githubusercontent.com/toulouse-pro/pros/main/${schema.file}?t=${Date.now()}`;
-    const res = await fetch(url);
+    // 2. Fetch using Token (Higher limits + No Cache)
+    const headers = {};
+    if (GITHUB_TOKEN) {
+        headers.Authorization = `Bearer ${GITHUB_TOKEN}`;
+    }
+
+    // Add timestamp to strictly bypass browser cache
+    const res = await fetch(`${api}?t=${Date.now()}`, { headers });
     
     if (res.ok) {
-      const text = await res.text();
-      data = jsyaml.load(text) || {};
+      const json = await res.json();
+      
+      // 3. Decode Base64 (Handling accents/UTF-8 correctly)
+      const yamlContent = decodeURIComponent(escape(atob(json.content)));
+      
+      data = jsyaml.load(yamlContent) || {};
+    } else {
+       console.warn("Fichier non trouvé ou erreur API");
     }
   } catch (e) {
-    console.warn("Error loading YAML", e);
+    console.warn("Erreur de chargement", e);
+    form.innerHTML = "<p style='color:red;'>Erreur de connexion à GitHub.</p>";
+    return;
   }
 
+  // 4. Build Form
   clearForm();
   schema.fields.forEach(f => {
     createField(f, data[f.name] || "");
   });
 }
-
 // ---------- Reset / Discard ----------
 resetBtn.onclick = () => {
   if (confirm("Voulez-vous vraiment annuler vos modifications locales et recharger depuis GitHub ?")) {
