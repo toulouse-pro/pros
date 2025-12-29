@@ -224,3 +224,23 @@ sectionSelect.onchange = () => {
 };
 
 loadSection(currentSection);
+
+// -------- Switch between sections in Editor -----------
+function setupEditorMenu() {
+  const nav = document.getElementById('site-nav');
+  const links = nav.querySelectorAll('a');
+  
+  links.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const sectionId = link.getAttribute('href').replace('#', '');
+      
+      // If the section exists in our SCHEMA, load the editor for it
+      if (window.SCHEMA[sectionId]) {
+        currentSection = sectionId;
+        loadSection(sectionId);
+      }
+    });
+  });
+}
+setupEditorMenu();
