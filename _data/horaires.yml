@@ -1,8 +1,7 @@
-lundi: "Fermé"
-mardi: "12:00 — 14:00 / 19:00 — 22:00"
-mercredi: "12:00 — 14:00 / 19:00 — 22:00"
-jeudi: "12:00 — 14:00 / 19:00 — 22:00"
-vendredi: "12:00 — 14:00 / 19:00 — 22:00"
-samedi: "12:00 — 14:00 / 19:00 — 22:00"
-dimanche: "12:00 — 16:00"
-note: "Fermé les jours fériés."
+lundi: Fermé
+mardi: 12:00 — 14:00 / 19:00 — 22:00
+mercredi: 12:00 — 14:00 / 19:00 — 22:00
+jeudi: Fermé le jour de l'an
+vendredi: 12:00 — 14:00 / 19:00 — 22:00
+samedi: 12:00 — 14:00 / 19:00 — 22:00
+dimanche: 12:00 — 16:00
