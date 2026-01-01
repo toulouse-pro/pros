@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Le Parisien – Toulouse</title>
+
+  <!-- Google Font (similar feel) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Arial&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -11,11 +17,13 @@
 <header>
   <div class="top-bar">
     <img src="images/logo.png" alt="Le Parisien" class="logo">
-    <button id="burger">&#9776;</button>
+    <button id="burger" aria-label="Menu">&#9776;</button>
   </div>
 </header>
 
-<nav id="menu">
+<!-- FULLSCREEN MENU -->
+<nav id="menu-overlay">
+  <button id="close">&times;</button>
   <a href="#accueil">Accueil</a>
   <a href="#restaurant">Le restaurant</a>
   <a href="#carte">La carte</a>
@@ -24,12 +32,12 @@
   <a href="#contact">Contact</a>
 </nav>
 
-<section id="accueil" class="hero">
+<section id="accueil" class="hero fade">
   <h1>LE PARISIEN</h1>
   <p>La tradition revue & corrigée</p>
 </section>
 
-<section id="restaurant">
+<section id="restaurant" class="fade">
   <h2>Le restaurant</h2>
   <p>
     Lieu de vie chaleureux au cœur de Toulouse, Le Parisien vous accueille
@@ -39,7 +47,7 @@
   <img src="images/interior-2.jpg" alt="">
 </section>
 
-<section id="carte">
+<section id="carte" class="fade">
   <h2>La carte</h2>
   <p>
     Une cuisine bistrot, des produits simples et efficaces,
@@ -47,7 +55,7 @@
   </p>
 </section>
 
-<section id="cuisine">
+<section id="cuisine" class="fade">
   <h2>La cuisine</h2>
   <img src="images/cuisine.jpg" alt="">
   <p>
@@ -56,16 +64,20 @@
   </p>
 </section>
 
-<section id="reservation">
+<section id="reservation" class="fade">
   <h2>Réserver</h2>
   <p>
-    Réservations par téléphone : <strong>05 61 21 54 12</strong>
+    Réservations par téléphone<br>
+    <strong>05 61 21 54 12</strong>
   </p>
 </section>
 
-<section id="contact">
+<section id="contact" class="fade">
   <h2>Contact</h2>
-  <p>29 bis Boulevard de Strasbourg<br>Toulouse</p>
+  <p>
+    29 bis Boulevard de Strasbourg<br>
+    Toulouse
+  </p>
   <p>Ouvert tous les jours</p>
 </section>
 
