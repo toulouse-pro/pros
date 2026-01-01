@@ -38,7 +38,9 @@ header {
 
 .logo {
   height: 48px;
-  margin-top: 6px; /* optical centering */
+  width: auto;          /* CRITICAL */
+  max-width: none;      /* prevents flex shrink weirdness */
+  display: block;
 }
 
 #burger {
