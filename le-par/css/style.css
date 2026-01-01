@@ -86,7 +86,6 @@ section {
 
 .hero {
   height: 90vh;
-  .hero {
   background: url("../images-real/top.jpeg") center/cover no-repeat;
   color: white;
   display: flex;
