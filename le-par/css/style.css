@@ -17,7 +17,8 @@ body {
 header {
   position: fixed;
   width: 100%;
-  background: #fff;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
   z-index: 20;
 }
 
@@ -85,24 +86,71 @@ section {
 }
 
 .hero {
-  height: 90vh;
-  background: url("../images-real/top.jpeg") center/cover no-repeat;
-  color: white;
+  position: relative;
+  height: 100vh;
+  background: url("../images/top.jpeg") no-repeat;
+  background-size: cover;
+  background-position: center 65%;
   display: flex;
-  flex-direction: column;
+  align-items: flex-end;
   justify-content: center;
+  padding-bottom: 120px;
+  color: white;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.15),
+    rgba(0,0,0,0.55)
+  );
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
   text-align: center;
+  max-width: 700px;
 }
 
 .hero h1 {
   font-family: "Playfair Display", serif;
-  font-size: 52px;
-  letter-spacing: 2px;
+  font-size: 64px;
+  letter-spacing: 6px;
+  font-weight: 500;
+}
+
+.hero-separator {
+  width: 120px;
+  height: 2px;
+  background: rgba(255,255,255,0.7);
+  margin: 20px auto;
 }
 
 .hero p {
-  margin-top: 10px;
   font-size: 18px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    background-position: center 55%;
+    padding-bottom: 90px;
+  }
+
+  .hero h1 {
+    font-size: 42px;
+    letter-spacing: 4px;
+  }
+
+  .hero p {
+    font-size: 14px;
+  }
 }
 
 h2 {
