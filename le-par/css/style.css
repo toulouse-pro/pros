@@ -38,9 +38,10 @@ header {
 
 .logo {
   height: 48px;
-  width: auto;          /* CRITICAL */
-  max-width: none;      /* prevents flex shrink weirdness */
+  width: auto;        /* keep aspect ratio */
+  max-width: none;    /* prevent flexbox shrinking */
   display: block;
+  margin-top: 6px;    /* optical vertical correction */
 }
 
 #burger {
